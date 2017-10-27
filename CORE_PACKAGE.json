@@ -1,0 +1,5 @@
+{
+  "name": "fatfs_wrapper",
+  "description": "Simple wrapper moving all FatFS access into a single worker thread.",
+  "provider": "core"
+}
