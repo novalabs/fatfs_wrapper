@@ -42,7 +42,7 @@ FRESULT wf_chdrive (BYTE);                           /* Change current drive */
 FRESULT wf_chdir (const TCHAR*);                     /* Change current directory */
 FRESULT wf_getcwd (TCHAR*, UINT);                    /* Get current directory */
 FRESULT wf_forward (FIL*, UINT(*)(const BYTE*,UINT), UINT, UINT*);   /* Forward data to the stream */
-FRESULT wf_mkfs (BYTE, BYTE, UINT);                  /* Create a file system on the drive */
+FRESULT wf_mkfs (TCHAR*, BYTE, UINT);                  /* Create a file system on the drive */
 FRESULT wf_fdisk (BYTE, const DWORD[], void*);       /* Divide a physical drive into some partitions */
 int wf_putc (TCHAR, FIL*);                           /* Put a character to the file */
 int wf_puts (const TCHAR*, FIL*);                    /* Put a string to the file */

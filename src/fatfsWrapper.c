@@ -510,9 +510,9 @@ static void ThreadFatFSWorker(void *arg) {
 
 #if HAS_MKFS
     case eFMKFS: {
-      const struct wrapper_msg_vBYTEvBYTEvUINT* exmsg = \
-                              (const struct wrapper_msg_vBYTEvBYTEvUINT*) msg;
-      msg->result = f_mkfs(exmsg->byte1, exmsg->byte2, exmsg->uint);
+      const struct wrapper_msg_pTCHARvBYTEvBYTE* exmsg = \
+                              (const struct wrapper_msg_pTCHARvBYTEvBYTE*) msg;
+      msg->result = f_mkfs(exmsg->string, exmsg->byte1, exmsg->byte2);
       break;
     }
 #endif /* HAS_MKFS */
@@ -992,13 +992,13 @@ FRESULT wf_rename (const TCHAR* path_old, const TCHAR* path_new) {
  * @param au    Allocation unit size [bytes].
  * @return
  */
-FRESULT wf_mkfs (BYTE drv, BYTE sfd, UINT au) {
-  struct wrapper_msg_vBYTEvBYTEvUINT msg;
+FRESULT wf_mkfs (const TCHAR* path, BYTE sfd, UINT au) {
+  struct wrapper_msg_pTCHARvBYTEvBYTE msg;
 
   msg.action = eFMKFS;
-  msg.byte1 = drv;
-  msg.byte2 = sfd;
-  msg.uint = au;
+  msg.string = path;
+  msg.byte1 = sfd;
+  msg.byte2 = au;
 
   chMsgSend(workerThread, (msg_t) &msg);
   return msg.result;
