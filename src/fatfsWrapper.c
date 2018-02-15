@@ -573,6 +573,10 @@ thread_t* wf_init (tprio_t priority) {
   return workerThread;
 }
 
+bool wf_is_running(void) {
+	return running;
+}
+
 void wf_terminate (void) {
   struct wrapper_msg_base msg;
 
