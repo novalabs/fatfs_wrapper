@@ -28,6 +28,7 @@
 #define HAS_LSEEK       (FATFS_WRP_ENABLE_LSEEK    && (_FS_MINIMIZE <= 2))
 #define HAS_OPENDIR     (FATFS_WRP_ENABLE_OPENDIR  && (_FS_MINIMIZE <= 1))
 #define HAS_READDIR     (FATFS_WRP_ENABLE_READDIR  && (_FS_MINIMIZE <= 1))
+#define HAS_CLOSEDIR    (FATFS_WRP_ENABLE_CLOSEDIR && (_FS_MINIMIZE <= 1))
 #define HAS_STAT        (FATFS_WRP_ENABLE_STAT     && (_FS_MINIMIZE == 0))
 #define HAS_GETFREE     (FATFS_WRP_ENABLE_GETFREE  && (_FS_MINIMIZE == 0) && !_FS_READONLY)
 #define HAS_TRUNCATE    (FATFS_WRP_ENABLE_TRUNKATE && (_FS_MINIMIZE == 0) && !_FS_READONLY)
@@ -87,6 +88,9 @@ enum wrapper_action {
 #endif
 #if HAS_READDIR
     eFREADDIR,
+#endif
+#if HAS_CLOSEDIR
+    eFCLOSEDIR,
 #endif
 #if HAS_STAT
     eFSTAT,
@@ -197,6 +201,11 @@ struct wrapper_msg_pDIRpFILINFO {
   FILINFO* filinfop;
 };
 
+struct wrapper_msg_pDIR {
+  _wrapper_msg_base
+
+  DIR* dirp;
+};
 
 struct wrapper_msg_pTCHARpFILINFO {
   _wrapper_msg_base
@@ -434,6 +443,15 @@ static void ThreadFatFSWorker(void *arg) {
       break;
     }
 #endif /* HAS_READDIR */
+
+#if HAS_CLOSEDIR
+    case eFCLOSEDIR: {
+      const struct wrapper_msg_pDIR* exmsg = \
+                                  (const struct wrapper_msg_pDIR*) msg;
+      msg->result = f_closedir(exmsg->dirp);
+      break;
+    }
+#endif /* HAS_CLOSEDIR */
 
 #if HAS_STAT
     case eFSTAT: {
@@ -831,6 +849,23 @@ FRESULT wf_readdir (DIR* dj, FILINFO* fno) {
   return msg.result;
 }
 #endif /* HAS_READDIR */
+
+#if HAS_CLOSEDIR || defined(__DOXYGEN__)
+/**
+ * @brief Close a Directory Entry
+ * @param dj    Pointer to the open directory object.
+ * @return
+ */
+FRESULT wf_closedir (DIR* dj) {
+  struct wrapper_msg_pDIR msg;
+
+  msg.action = eFCLOSEDIR;
+  msg.dirp = dj;
+
+  chMsgSend(workerThread, (msg_t) &msg);
+  return msg.result;
+}
+#endif /* HAS_CLOSEDIR */
 
 #if HAS_STAT || defined(__DOXYGEN__)
 /**

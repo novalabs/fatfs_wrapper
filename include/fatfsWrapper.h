@@ -28,6 +28,7 @@ FRESULT wf_lseek (FIL*, DWORD);                      /* Move file pointer of a f
 FRESULT wf_close (FIL*);                             /* Close an open file object */
 FRESULT wf_opendir (DIR*, const TCHAR*);             /* Open an existing directory */
 FRESULT wf_readdir (DIR*, FILINFO*);                 /* Read a directory item */
+FRESULT wf_closedir (DIR*);                          /* Close a directory item */
 FRESULT wf_stat (const TCHAR*, FILINFO*);            /* Get file status */
 FRESULT wf_write (FIL*, const void*, UINT, UINT*);   /* Write data to a file */
 FRESULT wf_getfree (const TCHAR*, DWORD*, FATFS**);  /* Get number of free clusters on the drive */
